@@ -1,0 +1,7 @@
+.movies-list-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 400px; /* Достаточная высота для отображения лоадера */
+}

@@ -6,4 +6,15 @@
 //App
 @import '../App.scss';
 
+//MoviesList
+@import '../components/MoviesList/MoviesList.scss';
+
+//Pagination
+@import '../components/MoviesPagination/MoviesPagination.scss';
+
+//Loader
+@import '../components/Loader/Loader.scss';
+
+//ErrorIndicator
+@import '../components/ErrorIndicator/ErrorIndicator.scss';
 

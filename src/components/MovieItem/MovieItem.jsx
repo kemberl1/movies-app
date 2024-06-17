@@ -17,6 +17,7 @@ export default function MovieItem({
   const formattedDate = date ? format(new Date(date), 'dd MMMM yyyy') : 'No date'
   const truncatedDescription = truncateText(description, 208)
   return (
+
     <Card hoverable className="movies-card" key={id}>
       <Row className="movies-card__container">
         <Col className="movies-card__image">

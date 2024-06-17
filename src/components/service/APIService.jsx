@@ -1,5 +1,5 @@
 export default class APIService {
-  apiBase = 'https://api.themoviedb.org/3/search/movie?query=return&include_adult=false&language=en-US&page=1'
+  apiBase = 'https://api.themoviedb.org/3/search/movie?query=return&include_adult=false&language=en-US'
 
   imageURL = 'https://image.tmdb.org/t/p/w500'
 
@@ -19,7 +19,11 @@ export default class APIService {
     if (!res.ok) {
       throw new Error(`Could not fetch ${this.apiBase} - status: ${res.status}`)
     }
-    const data = await res.json()
+    return res.json()
+  }
+
+  async getAllMovies() {
+    const data = await this.getResource()
     return data.results.map((movie) => ({
       id: movie.id,
       title: movie.title,
