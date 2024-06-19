@@ -1,4 +1,4 @@
-import { Pagination, Row } from 'antd'
+import { Pagination } from 'antd'
 
 export default function MoviesPagination({ currentPage, totalMovies, moviesPerPage, onPageChange }) {
   return (
@@ -8,6 +8,7 @@ export default function MoviesPagination({ currentPage, totalMovies, moviesPerPa
       total={totalMovies}
       pageSize={moviesPerPage}
       onChange={onPageChange}
+      showSizeChanger={false}
     />
   )
 }

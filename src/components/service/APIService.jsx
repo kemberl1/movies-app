@@ -1,5 +1,5 @@
 export default class APIService {
-  apiBase = 'https://api.themoviedb.org/3/search/movie?query=return&include_adult=false&language=en-US'
+  apiBase = 'https://api.themoviedb.org/3/search/movie'
 
   imageURL = 'https://image.tmdb.org/t/p/w500'
 
@@ -14,24 +14,28 @@ export default class APIService {
     },
   }
 
-  async getResource() {
-    const res = await fetch(this.apiBase, this.options)
+  async getResource(url) {
+    const res = await fetch(url, this.options)
     if (!res.ok) {
       throw new Error(`Could not fetch ${this.apiBase} - status: ${res.status}`)
     }
     return res.json()
   }
 
-  async getAllMovies() {
-    const data = await this.getResource()
-    return data.results.map((movie) => ({
-      id: movie.id,
-      title: movie.title,
-      description: movie.overview,
-      image: movie.poster_path ? `${this.imageURL}${movie.poster_path}` : this.imageNoAvailable,
-      genre: 'genre',
-      date: movie.release_date,
-      rating: movie.vote_average,
-    }))
+  async getAllMovies(page = 1, query = '') {
+    const url = `${this.apiBase}?query=${query}&include_adult=false&language=en-US&page=${page}`
+    const data = await this.getResource(url)
+    return {
+      results: data.results.map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        description: movie.overview,
+        image: movie.poster_path ? `${this.imageURL}${movie.poster_path}` : this.imageNoAvailable,
+        genre: 'genre',
+        date: movie.release_date,
+        rating: movie.vote_average,
+      })),
+      total_results: data.total_results,
+    }
   }
 }
