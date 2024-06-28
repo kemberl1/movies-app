@@ -7,15 +7,15 @@ export default class SearchForm extends Component {
     super(props)
     this.searchText = 'Type to search...'
     this.state = {
-      label: '',
+      searchQuery: props.searchQuery,
     }
     const { onSearch } = this.props
     this.debounceSearch = debounce(onSearch, 1000)
   }
 
-  onLabelChange = (event) => {
+  handleInputChange = (event) => {
     const { value } = event.target
-    this.setState({ label: value })
+    this.setState({ searchQuery: value })
     if (value.trim() !== '') {
       this.debounceSearch(value)
     } else {
@@ -24,7 +24,14 @@ export default class SearchForm extends Component {
   }
 
   render() {
-    const { label } = this.state
-    return <Input className="search-form" placeholder={this.searchText} onChange={this.onLabelChange} value={label} />
+    const { searchQuery } = this.state
+    return (
+      <Input
+        className="search-form"
+        placeholder={this.searchText}
+        value={searchQuery}
+        onChange={this.handleInputChange}
+      />
+    )
   }
 }

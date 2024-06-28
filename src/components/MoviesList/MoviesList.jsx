@@ -1,22 +1,23 @@
-import { Row, Col } from 'antd'
+import { Row, Col, Empty } from 'antd'
+import { useContext } from 'react'
 
+import DataContext, { DataProvider } from '../DataContext/DataContext'
 import MovieItem from '../MovieItem/MovieItem'
 
-export default function MoviesList({ movies = [] }) {
+export default function MoviesList() {
+  const movies = useContext(DataContext)
+  /// hello
+  // if (movies.length === 0) {
+  //   return <Empty description="The search has not given any results" />
+  // }
   return (
     <section className="movies-list-container">
-      <Row gutter={[16, 16]} justify="center">
+      <Row gutter={[36, 36]} justify="center">
         {movies.map((movie) => (
-          <Col xs={24} sm={24} md={12} lg={12} xl={12} key={movie.id}>
-            <MovieItem
-              title={movie.title}
-              description={movie.description}
-              image={movie.image}
-              genre={movie.genre}
-              date={movie.date}
-              id={movie.id}
-              rating={movie.rating}
-            />
+          <Col key={movie.id} xs={24} sm={24} md={12} lg={12} xl={12}>
+            <DataProvider value={movie}>
+              <MovieItem movie={movie} />
+            </DataProvider>
           </Col>
         ))}
       </Row>

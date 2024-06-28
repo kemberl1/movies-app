@@ -1,92 +1,100 @@
 import { Component } from 'react'
 import './App.scss'
-import { Header } from 'antd/es/layout/layout'
+import { Tabs, Pagination } from 'antd'
+import TabPane from 'antd/es/tabs/TabPane'
 
-import MovieList from './components/MoviesList/MoviesList'
-import APIService from './components/service/APIService'
-import MoviesPagination from './components/MoviesPagination/MoviesPagination'
-import ErrorIndicator from './components/ErrorIndicator/ErrorIndicator'
-import ErrorMessages from './components/ErrorMessages/ErrorMessages'
-import Loader from './components/Loader/Loader'
 import SearchForm from './components/SearchForm/SearchForm'
-import QueryNormalizer from './components/QueryNormalizer/QueryNormalizer'
+import MoviesList from './components/MoviesList/MoviesList'
+import APIService from './components/service/APIService'
+import { DataProvider } from './components/DataContext/DataContext'
 
 export default class App extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
-      moviesData: [],
-      currentPage: 1,
       loading: false,
-      error: false,
-      errorMessage: '',
-      totalMovies: 0,
       searchQuery: '',
+      activeTab: '1',
+      moviesData: [],
+      ratedMovies: [],
+      guestSessionId: null,
+      currentPage: 1,
+      totalMovies: 0,
+      totalPages: 0,
     }
     this.apiService = new APIService()
   }
 
-  componentDidMount() {
-    const { currentPage, searchQuery } = this.state
-    this.loadMovies(currentPage, searchQuery)
-  }
-
-  loadMovies = (page, query) => {
-    if (!query.trim()) {
-      this.setState({ moviesData: [], loading: false, totalMovies: 0 })
-      return
+  async componentDidMount() {
+    window.addEventListener('wheel', this.handleWheel, { passive: true })
+    try {
+      const data = await this.apiService.createGuestSession()
+      this.setState({ guestSessionId: data.guest_session_id })
+    } catch (error) {
+      console.log(`Ошибка создания сессии ${error}`)
     }
-    this.setState({ loading: true })
-    this.apiService
-      .getAllMovies(page, query)
-      .then((data) => {
-        this.setState({ moviesData: data.results, loading: false, totalMovies: data.total_results, error: false })
-      })
-      .catch(() => {
-        this.onError(ErrorMessages.DATA_FETCH_ERROR)
-      })
   }
 
-  onError = (message) => {
-    this.setState({ error: true, loading: false, errorMessage: message })
+  handleSearch = (value) => {
+    this.setState({ searchQuery: value, currentPage: 1 }, () => this.loadMovies(value, 1))
   }
 
   handlePageChange = (page) => {
     const { searchQuery } = this.state
-    this.setState({ currentPage: page }, () => {
-      this.loadMovies(page, searchQuery)
-    })
+    this.setState({ currentPage: page }, () => this.loadMovies(searchQuery, page))
+    window.scrollTo(0, 0)
   }
 
-  handleSearch = (query) => {
-    this.setState({ searchQuery: query, currentPage: 1 }, () => {
-      this.loadMovies(1, query)
-    })
+  setActiveTab(key) {
+    this.setState({ activeTab: key })
+  }
+
+  loadMovies = async (query = '', page = 1) => {
+    try {
+      this.setState({ loading: true })
+      const data = await this.apiService.getAllMovies(query, page)
+      this.setState({ moviesData: data.results, totalMovies: data.total_results, totalPages: data.total_pages })
+    } catch (error) {
+      console.log(error)
+      console.log('Ошибка загрузки  moviesData')
+    } finally {
+      this.setState({ loading: false })
+    }
   }
 
   render() {
-    const { moviesData, currentPage, loading, error, errorMessage, totalMovies } = this.state
-    const errorMessageIndicator = error ? <ErrorIndicator message={errorMessage} /> : null
-    const loadingIndicator = loading ? <Loader /> : null
-
+    const {
+      activeTab,
+      moviesData,
+      ratedMovies,
+      totalMovies,
+      guestSessionId,
+      currentPage,
+      totalPages,
+      searchQuery,
+      loading,
+    } = this.state
+    const movies = activeTab === '1' ? moviesData : ratedMovies
     return (
-      <div className="movies-app">
-        <section className="main">
-          <Header />
-          <QueryNormalizer onSearch={this.handleSearch}>
-            {(handleSearch) => <SearchForm onSearch={handleSearch} />}
-          </QueryNormalizer>
-          {errorMessageIndicator}
-          {loadingIndicator}
-          {!loading && !error && <MovieList movies={moviesData} />}
-          <MoviesPagination
-            currentPage={currentPage}
-            totalMovies={totalMovies}
-            moviesPerPage={20}
-            onPageChange={this.handlePageChange}
+      <section className="movies-app">
+        <Tabs activeKey={activeTab} onChange={(key) => this.setActiveTab(key)} centered>
+          <TabPane tab="Search" key="1" />
+          <TabPane tab="Rated" key="2" />
+        </Tabs>
+        {activeTab === '1' && <SearchForm searchQuery={searchQuery} onSearch={this.handleSearch} />}
+        <DataProvider value={movies}>
+          <MoviesList className="movies-list" loading={loading} />
+        </DataProvider>
+        {movies.length !== 0 && (
+          <Pagination
+            defaultCurrent={1}
+            curren={currentPage}
+            total={totalPages}
+            onChange={this.handlePageChange}
+            showSizeChanger={false}
           />
-        </section>
-      </div>
+        )}
+      </section>
     )
   }
 }

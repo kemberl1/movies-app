@@ -1,42 +1,46 @@
-import { Card, Tag, Row, Col, Rate } from 'antd'
+import { Card, Rate, Tag } from 'antd'
+import Meta from 'antd/es/card/Meta'
 import { format } from 'date-fns'
+import { useMediaQuery } from 'react-responsive'
 
-import truncateText from '../truncateText/truncateText'
-
-const { Meta } = Card
-
-export default function MovieItem({
-  title = null,
-  description = null,
-  image,
-  genre = null,
-  id = null,
-  date = null,
-  rating = null,
-}) {
+export default function MovieItem({ movie }) {
+  const { title, description, image, genre, date, rating } = movie
   const formattedDate = date ? format(new Date(date), 'dd MMMM yyyy') : 'No date'
-  const truncatedDescription = truncateText(description, 208)
+  const isDesktop = useMediaQuery({ query: '(min-width: 768px)' })
+
+  const renderImage = () => (
+    <div className="movie__image">
+      <img src={image} alt={title} />
+    </div>
+  )
+
+  const handleRate = (value) => {
+    console.log(value)
+  }
+
   return (
-
-    <Card hoverable className="movies-card" key={id}>
-      <Row className="movies-card__container">
-        <Col className="movies-card__image">
-          <img src={image} alt={title} />
-        </Col>
-
-        <Col className="movies-card__text">
-          <Meta title={title} description={formattedDate} />
-          <div className="movies-card__genre">
-            {/* {genre.map((genreItem) => ( */}
-            <Tag key="genre">{genre}</Tag>
-            {/* ))} */}
-          </div>
-          <p className="movies-card__description">{truncatedDescription}</p>
-          <div className="movies-card__rating">
-            <Rate defaultValue={rating} count={10} />
-          </div>
-        </Col>
-      </Row>
+    <Card className="movie" hoverable>
+      <div className="movie-container">
+        {isDesktop && renderImage()}
+        <div className="movie__meta">
+          <section className="movie__meta-top " data-rating={parseFloat(rating.toFixed(1))}>
+            {!isDesktop && renderImage()}
+            <Meta
+              className="movie__meta-info"
+              title={title}
+              description={
+                <>
+                  <div className="movie__meta-date">{formattedDate}</div>
+                  <Tag className="movie__meta-genre">{genre}</Tag>
+                  <Tag className="movie__meta-genre">{genre}</Tag>
+                </>
+              }
+            />
+          </section>
+          <Meta className="movie__meta-description" description={description} />
+          <Rate className="movie__meta-rating" defaultValue={0} count={10} onChange={handleRate} />
+        </div>
+      </div>
     </Card>
   )
 }

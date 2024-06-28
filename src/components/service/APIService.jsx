@@ -1,41 +1,78 @@
 export default class APIService {
-  apiBase = 'https://api.themoviedb.org/3/search/movie'
+  apiBase = 'https://api.themoviedb.org/3/'
+
+  apiKey = 'eee128194f0967fa959fb7ad02769692'
 
   imageURL = 'https://image.tmdb.org/t/p/w500'
 
   imageNoAvailable = 'https://via.placeholder.com/500x750?text=No+Image+Available'
 
-  options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization:
-        'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZWUxMjgxOTRmMDk2N2ZhOTU5ZmI3YWQwMjc2OTY5MiIsInN1YiI6IjY2NmRkYzU4ZTAxZmQ2YTRmMmU0YTcxMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.DG-yFuP6UlRWDE2slPN_QcPiVOXtf9mo6FRfdQL_LA0',
-    },
-  }
-
-  async getResource(url) {
-    const res = await fetch(url, this.options)
+  static getResource = async (url, options = {}) => {
+    const res = await fetch(url, options)
     if (!res.ok) {
-      throw new Error(`Could not fetch ${this.apiBase} - status: ${res.status}`)
+      throw new Error(`Could not fetch ${url} - status: ${res.status}`)
     }
     return res.json()
   }
 
-  async getAllMovies(page = 1, query = '') {
-    const url = `${this.apiBase}?query=${query}&include_adult=false&language=en-US&page=${page}`
-    const data = await this.getResource(url)
-    return {
-      results: data.results.map((movie) => ({
-        id: movie.id,
-        title: movie.title,
-        description: movie.overview,
-        image: movie.poster_path ? `${this.imageURL}${movie.poster_path}` : this.imageNoAvailable,
-        genre: 'genre',
-        date: movie.release_date,
-        rating: movie.vote_average,
-      })),
-      total_results: data.total_results,
+  transformMovieData = (data) => ({
+    results: data.results.map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      description: movie.overview,
+      image: movie.poster_path ? `${this.imageURL}${movie.poster_path}` : this.imageNoAvailable,
+      genre: 'genre',
+      date: movie.release_date,
+      rating: movie.vote_average,
+    })),
+    total_results: data.total_results,
+    total_pages: data.total_pages,
+  })
+
+  createGuestSession = async () => {
+    try {
+      const url = `${this.apiBase}authentication/guest_session/new?api_key=${this.apiKey}`
+      console.log(`Guests Session Created ${url}`)
+      return APIService.getResource(url)
+    } catch (error) {
+      throw new Error(`createGuestSession: ${error.status}`)
     }
+  }
+
+  getAllMovies = async (query, page = 1) => {
+    try {
+      const url = `${this.apiBase}search/movie?query=${query}&include_adult=false&language=en-US&page=${page}&api_key=${this.apiKey}`
+      const data = await APIService.getResource(url)
+      console.log(data)
+      return this.transformMovieData(data)
+    } catch (error) {
+      throw new Error(`getAllMovies: ${error}`)
+    }
+  }
+
+  getRatedMovies = async (sessionId, page = 1) => {
+    try {
+      const url = `${this.apiBase}guest_session/${sessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`
+      const data = await APIService.getResource(url)
+      console.log(data)
+      return this.transformMovieData(data)
+    } catch (error) {
+      throw new Error(`getRatedMovies: ${error}`)
+    }
+  }
+
+  rateMovie = async (sessionId, movieId, rating) => {
+    const url = `${this.apiBase}movie/${movieId}/rating?api_key=${this.apiKey}&guest_session_id=${sessionId}`
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'application/json',
+      },
+      body: JSON.stringify({
+        value: rating,
+      }),
+    }
+    return APIService.getResource(url, options)
   }
 }
