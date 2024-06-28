@@ -3,8 +3,10 @@ import Meta from 'antd/es/card/Meta'
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive'
 
-export default function MovieItem({ movie }) {
-  const { title, description, image, genre, date, rating } = movie
+import truncateText from '../truncateText/truncateText'
+
+export default function MovieItem({ movie, onRate }) {
+  const { title, description, image, genre, date, globalRating, userRating, id } = movie
   const formattedDate = date ? format(new Date(date), 'dd MMMM yyyy') : 'No date'
   const isDesktop = useMediaQuery({ query: '(min-width: 768px)' })
 
@@ -15,7 +17,7 @@ export default function MovieItem({ movie }) {
   )
 
   const handleRate = (value) => {
-    console.log(value)
+    onRate(id, value)
   }
 
   return (
@@ -23,7 +25,7 @@ export default function MovieItem({ movie }) {
       <div className="movie-container">
         {isDesktop && renderImage()}
         <div className="movie__meta">
-          <section className="movie__meta-top " data-rating={parseFloat(rating.toFixed(1))}>
+          <section className="movie__meta-top " data-rating={parseFloat(globalRating.toFixed(1))}>
             {!isDesktop && renderImage()}
             <Meta
               className="movie__meta-info"
@@ -37,8 +39,8 @@ export default function MovieItem({ movie }) {
               }
             />
           </section>
-          <Meta className="movie__meta-description" description={description} />
-          <Rate className="movie__meta-rating" defaultValue={0} count={10} onChange={handleRate} />
+          <Meta className="movie__meta-description" description={truncateText(description, 120)} />
+          <Rate className="movie__meta-rating" defaultValue={0} value={userRating} count={10} onChange={handleRate} />
         </div>
       </div>
     </Card>

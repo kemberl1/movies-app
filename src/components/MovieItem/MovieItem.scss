@@ -7,16 +7,14 @@
 .movie__meta-info .ant-card-meta-title {
   white-space: normal;
   margin-bottom: 0 !important;
-font-size: 20px;
-font-weight: 400;
-line-height: 28px;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
 }
 
 .movie__meta-description .ant-card-meta-description {
   color: rgba(0, 0, 0, 0.65);
 }
-
-
 
 //custom styles
 
@@ -46,7 +44,7 @@ line-height: 28px;
     }
   }
   &__meta {
-		height: auto;
+    height: auto;
     @media (max-width: 768px) {
       padding: 6px 10px;
       row-gap: 10px;
@@ -63,8 +61,8 @@ line-height: 28px;
       @media (max-width: 768px) {
         text-align: end;
       }
-			display: flex;
-			flex-wrap: wrap;
+      display: flex;
+      flex-wrap: wrap;
       text-align: center;
       margin-top: auto;
       margin-bottom: 10px;
@@ -83,8 +81,8 @@ line-height: 28px;
 
     &-top {
       display: flex;
-			position: relative;
-			&::after {
+      position: relative;
+      &::after {
         @media (max-width: 768px) {
           top: 16px;
           right: -18px;
@@ -94,8 +92,8 @@ line-height: 28px;
         position: relative;
         width: 30px;
         height: 30px;
-				top: 18px;
-				right: -17px;
+        top: 18px;
+        right: -17px;
         border: 2px solid rgb(233, 209, 0);
         display: flex;
         align-items: center;
