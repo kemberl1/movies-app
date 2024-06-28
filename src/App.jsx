@@ -102,6 +102,22 @@ export default class App extends Component {
     const { guestSessionId, activeTab, moviesData, ratedMovies } = this.state
     try {
       await this.apiService.rateMovie(guestSessionId, movieId, rating)
+
+      const updateMovies = (movies) =>
+        movies.map((movie) => {
+          if (movie.id === movieId) {
+            return { ...movie, userRating: rating }
+          }
+          return movie
+        })
+
+      if (activeTab === '1') {
+        this.setState({
+          moviesData: updateMovies(moviesData),
+        })
+      } else if (activeTab === '2') {
+        this.setState({ ratedMovies: updateMovies(ratedMovies) })
+      }
     } catch (error) {
       console.log(`Ошибка выставления рейтинга: ${error}`)
     }
