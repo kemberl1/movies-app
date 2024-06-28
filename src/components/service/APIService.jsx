@@ -23,10 +23,11 @@ export default class APIService {
       image: movie.poster_path ? `${this.imageURL}${movie.poster_path}` : this.imageNoAvailable,
       genre: 'genre',
       date: movie.release_date,
-      rating: movie.vote_average,
+      globalRating: movie.vote_average,
+      userRating: movie.rating,
     })),
-    total_results: data.total_results,
-    total_pages: data.total_pages,
+    totalResults: data.total_results,
+    totalPages: data.total_pages,
   })
 
   createGuestSession = async () => {
@@ -55,6 +56,7 @@ export default class APIService {
       const url = `${this.apiBase}guest_session/${sessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`
       const data = await APIService.getResource(url)
       console.log(data)
+      console.log(url)
       return this.transformMovieData(data)
     } catch (error) {
       throw new Error(`getRatedMovies: ${error}`)
