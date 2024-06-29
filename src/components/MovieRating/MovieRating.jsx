@@ -1,0 +1,40 @@
+import { Component } from 'react'
+import { Rate } from 'antd'
+
+export default class MovieRating extends Component {
+  static handleRate = (value, id, onRate) => {
+    onRate(id, value)
+  }
+
+  static updateMovieRating = (moviesArray, movieId, rating) =>
+    moviesArray.map((movieItem) => {
+      if (movieItem.id === movieId) {
+        return { ...movieItem, userRating: rating }
+      }
+      return movieItem
+    })
+
+  static mergeRatings = (moviesData, ratedMovies) => {
+    const ratedMap = ratedMovies.reduce((acc, movie) => {
+      acc[movie.id] = movie.userRating
+      return acc
+    }, {})
+
+    return moviesData.map((movie) => ({
+      ...movie,
+      userRating: ratedMap[movie.id] || movie.userRating,
+    }))
+  }
+
+  render() {
+    const { id, value, count, onRate } = this.props
+    return (
+      <Rate
+        defaultValue={0}
+        value={value}
+        count={count}
+        onChange={(rate) => MovieRating.handleRate(rate, id, onRate)}
+      />
+    )
+  }
+}

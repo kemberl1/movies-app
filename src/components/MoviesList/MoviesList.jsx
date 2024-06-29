@@ -7,7 +7,7 @@ import MovieItem from '../MovieItem/MovieItem'
 import Loader from '../Loader/Loader'
 import ErrorIndicator from '../ErrorIndicator/ErrorIndicator'
 
-export default function MoviesList({ loading, emptyResults, error, errorMessage, onRate, userRating }) {
+export default function MoviesList({ loading, emptyResults, error, errorMessage, onRate }) {
   const movies = useContext(DataContext)
 
   if (loading) {
@@ -29,7 +29,7 @@ export default function MoviesList({ loading, emptyResults, error, errorMessage,
           {movies.map((movie) => (
             <Col key={movie.id} xs={24} sm={24} md={12} lg={12} xl={12}>
               <DataProvider value={movie}>
-                <MovieItem movie={movie} onRate={onRate} userRating={userRating} />
+                <MovieItem movie={movie} onRate={onRate} userRating={movie.userRating} />
               </DataProvider>
             </Col>
           ))}

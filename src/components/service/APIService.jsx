@@ -24,7 +24,7 @@ export default class APIService {
       genre: 'genre',
       date: movie.release_date,
       globalRating: movie.vote_average,
-      userRating: movie.rating,
+      userRating: movie.rating || 0,
     })),
     totalResults: data.total_results,
     totalPages: data.total_pages,

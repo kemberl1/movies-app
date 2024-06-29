@@ -3,10 +3,11 @@ import Meta from 'antd/es/card/Meta'
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive'
 
+import MovieRating from '../MovieRating/MovieRating'
 import truncateText from '../truncateText/truncateText'
 
 export default function MovieItem({ movie, onRate }) {
-  const { title, description, image, genre, date, globalRating, userRating, id } = movie
+  const { title, description, image, genre, date, globalRating, id, userRating } = movie
   const formattedDate = date ? format(new Date(date), 'dd MMMM yyyy') : 'No date'
   const isDesktop = useMediaQuery({ query: '(min-width: 768px)' })
 
@@ -15,10 +16,6 @@ export default function MovieItem({ movie, onRate }) {
       <img src={image} alt={title} />
     </div>
   )
-
-  const handleRate = (value) => {
-    onRate(id, value)
-  }
 
   return (
     <Card className="movie" hoverable>
@@ -40,7 +37,7 @@ export default function MovieItem({ movie, onRate }) {
             />
           </section>
           <Meta className="movie__meta-description" description={truncateText(description, 120)} />
-          <Rate className="movie__meta-rating" defaultValue={0} value={userRating} count={10} onChange={handleRate} />
+          <MovieRating className="movie__meta-rating" id={id} value={userRating} count={10} onRate={onRate} />
         </div>
       </div>
     </Card>

@@ -4,6 +4,7 @@ import { PropTypes } from 'prop-types'
 import ErrorIcon from './ErrorIcon.png'
 
 export default function ErrorIndicator({ message }) {
+	
   return (
     <div className="error-indicator">
       <img src={ErrorIcon} alt="error icon" />
