@@ -16,7 +16,7 @@ export default function MoviesList({ loading, error, errorMessage, onRate, searc
     return <Loader />
   }
 
-  if (searchQuery !== '' && movies.length === 0) {
+  if ((searchQuery !== '' && movies.length === 0) || (activeTab === '2' && movies.length === 0)) {
     return <Empty description={dataMessage} />
   }
 

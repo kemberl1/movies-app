@@ -23,10 +23,9 @@ export default class App extends Component {
       moviesData: [],
       searchPage: 1,
       searchTotalMovies: 0,
-      searchQuery: '',
       searchError: false,
       searchMoviesLoaded: false,
-
+      searchQuery: '',
       // ratedTab
       ratedMovies: [],
       ratedPage: 1,
@@ -40,10 +39,9 @@ export default class App extends Component {
   async componentDidMount() {
     try {
       const genresData = await this.apiService.getGenres()
-      console.log('Genres data in componentDidMount:', genresData) // Добавьте эту строку для отладки
       this.setState({ genres: genresData.genres })
     } catch (error) {
-      console.error('Error fetching genres', error)
+      throw new Error(error)
     }
     window.addEventListener('wheel', this.handleWheel, { passive: true })
     this.checkGuestSession()
@@ -54,7 +52,9 @@ export default class App extends Component {
     if (storedSession) {
       const sessionData = JSON.parse(storedSession)
       if (new Date(sessionData.expires_at) > new Date()) {
-        this.setState({ guestSessionId: sessionData.guest_session_id })
+        this.setState({ guestSessionId: sessionData.guest_session_id }, () => {
+          this.loadMovies('', 1, true)
+        })
       } else {
         await this.createGuestSession()
       }
@@ -109,11 +109,25 @@ export default class App extends Component {
   loadMovies = async (query = '', page = 1, isRated = false) => {
     this.setState({ loading: true })
 
+    const { guestSessionId, ratedMovies } = this.state
+
     try {
       let data
       if (isRated) {
-        const { guestSessionId } = this.state
-        data = await this.apiService.getRatedMovies(guestSessionId, page)
+        data = await this.apiService.getRatedMovies(guestSessionId, page).catch((error) => {
+          if (error.response?.status === 404) {
+            this.setState({
+              ratedMovies: [],
+              ratedError: false,
+              ratedMoviesLoaded: true,
+              ratedTotalMovies: 0,
+            })
+            return null
+          }
+          throw error
+        })
+        if (!data) return
+
         this.setState({
           ratedMovies: data.results,
           ratedError: false,
@@ -121,7 +135,6 @@ export default class App extends Component {
           ratedTotalMovies: data.totalResults,
         })
       } else {
-        const { ratedMovies } = this.state
         data = await this.apiService.getAllMovies(query, page)
         this.setState({
           moviesData: MovieRating.mergeRatings(data.results, ratedMovies),
@@ -131,11 +144,7 @@ export default class App extends Component {
         })
       }
     } catch (error) {
-      if (isRated) {
-        this.onError('2', ErrorMessages.DATA_FETCH_ERROR)
-      } else {
-        this.onError('1', ErrorMessages.DATA_FETCH_ERROR)
-      }
+      this.onError(isRated ? '2' : '1', ErrorMessages.DATA_FETCH_ERROR)
     } finally {
       this.setState({ loading: false })
     }
@@ -152,7 +161,7 @@ export default class App extends Component {
         searchMoviesLoaded: false,
       }))
     } catch (error) {
-      console.log(`Ошибка выставления рейтинга: ${error}`)
+      throw new Error(error)
     }
   }
 
@@ -181,7 +190,7 @@ export default class App extends Component {
     const error = activeTab === '1' ? searchError : ratedError
     const totalMovies = activeTab === '1' ? searchTotalMovies : ratedTotalMovies
 
-    const items = [
+    const tabsItems = [
       {
         label: 'Search',
         key: '1',
@@ -197,7 +206,7 @@ export default class App extends Component {
             activeKey={activeTab}
             onChange={(key) => this.setActiveTab(key)}
             centered
-            items={items}
+            items={tabsItems}
           />
           {activeTab === '1' && <SearchForm searchQuery={searchQuery} onSearch={this.handleSearch} />}
           <DataProvider value={movies}>

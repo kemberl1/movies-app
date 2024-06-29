@@ -1,4 +1,4 @@
-import { Card, Rate, Tag } from 'antd'
+import { Card, Tag } from 'antd'
 import Meta from 'antd/es/card/Meta'
 import { format } from 'date-fns'
 import { useMediaQuery } from 'react-responsive'
@@ -12,7 +12,6 @@ export default function MovieItem({ movie, onRate }) {
   const formattedDate = date ? format(new Date(date), 'dd MMMM yyyy') : 'No date'
   const isDesktop = useMediaQuery({ query: '(min-width: 768px)' })
   const genres = useGenres()
-  console.log('Genres in MovieItem:', genres)
 
   const renderImage = () => (
     <div className="movie__image">

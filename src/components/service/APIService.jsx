@@ -33,7 +33,6 @@ export default class APIService {
   createGuestSession = async () => {
     try {
       const url = `${this.apiBase}authentication/guest_session/new?api_key=${this.apiKey}`
-      console.log(`Guests Session Created ${url}`)
       return APIService.getResource(url)
     } catch (error) {
       throw new Error(`createGuestSession: ${error.status}`)
@@ -44,7 +43,7 @@ export default class APIService {
     try {
       const url = `${this.apiBase}search/movie?query=${query}&include_adult=false&language=en-US&page=${page}&api_key=${this.apiKey}`
       const data = await APIService.getResource(url)
-      console.log(data)
+
       return this.transformMovieData(data)
     } catch (error) {
       throw new Error(`getAllMovies: ${error}`)
@@ -55,8 +54,6 @@ export default class APIService {
     try {
       const url = `${this.apiBase}guest_session/${sessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`
       const data = await APIService.getResource(url)
-      console.log(data)
-      console.log(url)
       return this.transformMovieData(data)
     } catch (error) {
       throw new Error(`getRatedMovies: ${error}`)
