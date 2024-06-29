@@ -2,20 +2,22 @@ import { Row, Col, Empty } from 'antd'
 import { useContext } from 'react'
 
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary'
-import DataContext, { DataProvider } from '../DataContext/DataContext'
+import DataContext, { DataProvider } from '../Context/DataContext'
 import MovieItem from '../MovieItem/MovieItem'
 import Loader from '../Loader/Loader'
 import ErrorIndicator from '../ErrorIndicator/ErrorIndicator'
 
-export default function MoviesList({ loading, emptyResults, error, errorMessage, onRate }) {
+export default function MoviesList({ loading, error, errorMessage, onRate, searchQuery, activeTab }) {
   const movies = useContext(DataContext)
+
+  const dataMessage = activeTab === '2' ? 'You have no rated movies' : 'The search has not given any results'
 
   if (loading) {
     return <Loader />
   }
 
-  if (emptyResults) {
-    return <Empty description="The search has not given any results" />
+  if (searchQuery !== '' && movies.length === 0) {
+    return <Empty description={dataMessage} />
   }
 
   if (error) {

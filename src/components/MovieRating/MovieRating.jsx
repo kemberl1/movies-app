@@ -30,6 +30,7 @@ export default class MovieRating extends Component {
     const { id, value, count, onRate } = this.props
     return (
       <Rate
+        className="movie__meta-rating"
         defaultValue={0}
         value={value}
         count={count}

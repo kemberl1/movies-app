@@ -21,7 +21,7 @@ export default class APIService {
       title: movie.title,
       description: movie.overview,
       image: movie.poster_path ? `${this.imageURL}${movie.poster_path}` : this.imageNoAvailable,
-      genre: 'genre',
+      genre: movie.genre_ids,
       date: movie.release_date,
       globalRating: movie.vote_average,
       userRating: movie.rating || 0,
@@ -76,5 +76,15 @@ export default class APIService {
       }),
     }
     return APIService.getResource(url, options)
+  }
+
+  getGenres = async () => {
+    const url = `${this.apiBase}genre/movie/list?api_key=${this.apiKey}&language=en-US`
+    try {
+      const data = await APIService.getResource(url)
+      return data
+    } catch (error) {
+      throw new Error(`getGenres: ${error}`)
+    }
   }
 }
