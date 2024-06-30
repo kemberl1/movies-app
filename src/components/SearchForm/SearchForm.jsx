@@ -1,5 +1,5 @@
 import { Input } from 'antd'
-import { Component } from 'react'
+import React, { Component } from 'react'
 import { debounce } from 'lodash'
 
 export default class SearchForm extends Component {
@@ -11,6 +11,11 @@ export default class SearchForm extends Component {
     }
     const { onSearch } = this.props
     this.debounceSearch = debounce(onSearch, 1000)
+    this.inputRef = React.createRef()
+  }
+
+  componentDidMount() {
+    this.inputRef.current.focus()
   }
 
   handleInputChange = (event) => {
@@ -27,6 +32,7 @@ export default class SearchForm extends Component {
     const { searchQuery } = this.state
     return (
       <Input
+        ref={this.inputRef}
         className="search-form"
         placeholder={this.searchText}
         value={searchQuery}

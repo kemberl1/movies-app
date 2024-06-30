@@ -1,0 +1,19 @@
+@function rating-color($rating) {
+  @if $rating >= 0 and $rating < 3 {
+    @return #e90000;
+  } @else if $rating >= 3 and $rating < 5 {
+    @return #e97e00;
+  } @else if $rating >= 5 and $rating < 7 {
+    @return #e9d100;
+  } @else if $rating >= 7 {
+    @return #66e900;
+  }
+}
+
+/* Применение цвета к ::after */
+@each $rating in 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 {
+  $color: rating-color($rating);
+  [data-rating^='#{$rating}']::after {
+    border: 2px solid $color;
+  }
+}

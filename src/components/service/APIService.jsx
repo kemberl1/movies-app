@@ -8,11 +8,15 @@ export default class APIService {
   imageNoAvailable = 'https://via.placeholder.com/500x750?text=No+Image+Available'
 
   static getResource = async (url, options = {}) => {
-    const res = await fetch(url, options)
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url} - status: ${res.status}`)
+    try {
+      const res = await fetch(url, options)
+      if (!res.ok) {
+        throw new Error(`failed to fetch: ${res.status}`)
+      }
+      return await res.json()
+    } catch (error) {
+      throw new Error(`Could not fetch ${url}, error: ${error.message}`)
     }
-    return res.json()
   }
 
   transformMovieData = (data) => ({

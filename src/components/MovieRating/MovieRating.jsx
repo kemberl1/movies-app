@@ -1,5 +1,6 @@
 import { Component } from 'react'
 import { Rate } from 'antd'
+import PropTypes from 'prop-types'
 
 export default class MovieRating extends Component {
   static handleRate = (value, id, onRate) => {
@@ -38,4 +39,11 @@ export default class MovieRating extends Component {
       />
     )
   }
+}
+
+MovieRating.propTypes = {
+  id: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+  count: PropTypes.number.isRequired,
+  onRate: PropTypes.func.isRequired,
 }

@@ -1,8 +1,8 @@
-
 //Ant design
 
 .ant-card-body {
   padding: 0 !important;
+	height: 100%;
 }
 
 .movie__meta-info .ant-card-meta-title {
@@ -23,12 +23,15 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+	height: 100%;
   &__image {
     @media (max-width: 768px) {
-      height: auto;
+			min-height: 95px;
+			max-height: 95px;
     }
     max-width: 183px;
-    height: 281px;
+    min-height: 280px;
+		max-height: 300px;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
@@ -128,4 +131,5 @@
   min-height: 281px;
   display: flex;
   border: 1px solid #f0f0f0;
+	height: 100%;
 }

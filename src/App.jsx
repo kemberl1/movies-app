@@ -1,14 +1,14 @@
 import { Component } from 'react'
 import './App.scss'
-import { Tabs, Pagination } from 'antd'
+import { Tabs } from 'antd'
 
 import SearchForm from './components/SearchForm/SearchForm'
 import MoviesList from './components/MoviesList/MoviesList'
-import APIService from './components/service/APIService'
-import { DataProvider } from './components/Context/DataContext'
+import APIService from './components/Service/APIService'
 import { GenresProvider } from './components/Context/GenresContext'
 import ErrorMessages from './components/ErrorMessages/ErrorMessages'
 import MovieRating from './components/MovieRating/MovieRating'
+import MoviesPagination from './components/MoviesPagination/MoviesPagination'
 
 export default class App extends Component {
   constructor() {
@@ -41,6 +41,8 @@ export default class App extends Component {
       const genresData = await this.apiService.getGenres()
       this.setState({ genres: genresData.genres })
     } catch (error) {
+      this.onError('1', ErrorMessages.SESSION_CREATION_ERROR)
+      this.onError('2', ErrorMessages.SESSION_CREATION_ERROR)
       throw new Error(error)
     }
     window.addEventListener('wheel', this.handleWheel, { passive: true })
@@ -117,7 +119,6 @@ export default class App extends Component {
         data = await this.apiService.getRatedMovies(guestSessionId, page).catch((error) => {
           if (error.response?.status === 404) {
             this.setState({
-              ratedMovies: [],
               ratedError: false,
               ratedMoviesLoaded: true,
               ratedTotalMovies: 0,
@@ -126,7 +127,6 @@ export default class App extends Component {
           }
           throw error
         })
-        if (!data) return
 
         this.setState({
           ratedMovies: data.results,
@@ -201,33 +201,24 @@ export default class App extends Component {
     return (
       <GenresProvider value={genres}>
         <section className="movies-app">
-          <Tabs
-            destroyInactiveTabPane
-            activeKey={activeTab}
-            onChange={(key) => this.setActiveTab(key)}
-            centered
-            items={tabsItems}
-          />
+          <Tabs centered activeKey={activeTab} onChange={this.setActiveTab} items={tabsItems} />
           {activeTab === '1' && <SearchForm searchQuery={searchQuery} onSearch={this.handleSearch} />}
-          <DataProvider value={movies}>
-            <MoviesList
-              className="movies-list"
-              loading={loading}
-              emptyResults={emptyResults}
-              error={error}
-              errorMessage={errorMessage}
-              onRate={this.handleRate}
-              activeTab={activeTab}
-              searchQuery={searchQuery}
-            />
-          </DataProvider>
+          <MoviesList
+            className="movies-list"
+            movies={movies}
+            loading={loading}
+            emptyResults={emptyResults}
+            error={error}
+            errorMessage={errorMessage}
+            onRate={this.handleRate}
+            activeTab={activeTab}
+            searchQuery={searchQuery}
+          />
           {movies.length !== 0 && !loading && (
-            <Pagination
-              current={currentPage}
-              pageSize={20}
-              total={totalMovies}
-              onChange={this.handlePageChange}
-              showSizeChanger={false}
+            <MoviesPagination
+              currentPage={currentPage}
+              totalMovies={totalMovies}
+              handlePageChange={this.handlePageChange}
             />
           )}
         </section>
