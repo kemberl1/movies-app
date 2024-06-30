@@ -81,13 +81,13 @@ export default class App extends Component {
   }
 
   handlePageChange = (page) => {
+    window.scrollTo(0, 0)
     const { activeTab, searchQuery } = this.state
     if (activeTab === '1') {
       this.setState({ searchPage: page }, () => this.loadMovies(searchQuery, page))
     } else {
       this.setState({ ratedPage: page }, () => this.loadMovies('', page, true))
     }
-    window.scrollTo(0, 0)
   }
 
   onError = (tab, message) => {
