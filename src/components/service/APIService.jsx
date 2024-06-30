@@ -1,4 +1,6 @@
-export default class APIService {
+import { Component } from 'react'
+
+export default class APIService extends Component {
   apiBase = 'https://api.themoviedb.org/3/'
 
   apiKey = 'eee128194f0967fa959fb7ad02769692'
