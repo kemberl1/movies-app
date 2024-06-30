@@ -77,6 +77,11 @@ export default class App extends Component {
   }
 
   handleSearch = (value) => {
+    const { searchError } = this.state
+    if (searchError) {
+      this.onError('1', ErrorMessages.DATA_FETCH_ERROR)
+      return
+    }
     this.setState({ searchQuery: value, searchPage: 1, emptyResults: false }, () => this.loadMovies(value, 1))
   }
 
