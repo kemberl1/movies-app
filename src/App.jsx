@@ -4,11 +4,11 @@ import { Tabs } from 'antd'
 
 import SearchForm from './components/SearchForm/SearchForm'
 import MoviesList from './components/MoviesList/MoviesList'
-import APIService from './components/Service/APIService'
 import { GenresProvider } from './components/Context/GenresContext'
 import ErrorMessages from './components/ErrorMessages/ErrorMessages'
 import MovieRating from './components/MovieRating/MovieRating'
 import MoviesPagination from './components/MoviesPagination/MoviesPagination'
+import APIService from './components/Service/APIService'
 
 export default class App extends Component {
   constructor() {
