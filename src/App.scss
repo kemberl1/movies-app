@@ -1,0 +1,17 @@
+body {
+  background-color: rgb(241, 240, 240);
+	font-weight: 400;
+}
+
+.movies-app {
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+  background-color: white;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 36px;
+}
+.ant-pagination{
+	
+}

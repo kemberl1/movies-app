@@ -1,0 +1,26 @@
+//General
+@import 'variables';
+@import 'mixins';
+@import 'normalize';
+
+//App
+@import '../App.scss';
+
+//MoviesList
+@import '../components/MoviesList/MoviesList.scss';
+
+//MovieItem
+@import '../components/MovieItem/MovieItem.scss';
+@import '../components/MovieItem/RatingColor.scss';
+
+//Pagination
+@import '../components/MoviesPagination/MoviesPagination.scss';
+
+//Loader
+@import '../components/Loader/Loader.scss';
+
+//ErrorIndicator
+@import '../components/ErrorIndicator/ErrorIndicator.scss';
+
+//SearchForm
+@import '../components/SearchForm/SearchForm.scss';

@@ -1,0 +1,136 @@
+//Ant design
+
+.ant-card-body {
+  padding: 0 !important;
+	height: 100%;
+}
+
+.movie__meta-info .ant-card-meta-title {
+  white-space: normal;
+  margin-bottom: 0 !important;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.movie__meta-description .ant-card-meta-description {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+//custom styles
+
+.movie {
+  display: flex;
+	
+  flex-direction: column;
+  justify-content: space-between;
+	height: 100%;
+  &__image {
+    @media (max-width: 768px) {
+			min-height: 95px;
+			max-height: 95px;
+    }
+    max-width: 183px;
+    min-height: 280px;
+		max-height: 300px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    img {
+      @media (max-width: 768px) {
+        display: block;
+        max-height: 95px;
+      }
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+  &__meta {
+    height: auto;
+    @media (max-width: 768px) {
+      padding: 6px 10px;
+      row-gap: 10px;
+    }
+    padding: 12px 20px;
+    padding-bottom: 20px;
+    row-gap: 15px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 16px;
+    transition: all 0.3s ease;
+
+    &-rating {
+      @media (max-width: 768px) {
+        text-align: end;
+      }
+      display: flex;
+      flex-wrap: wrap;
+      text-align: center;
+      margin-top: auto;
+      margin-bottom: 10px;
+    }
+
+    &-genre {
+      color: rgba(0, 0, 0, 0.65) !important;
+    }
+
+    &-title {
+      font-size: 20px;
+      color: black;
+      text-align: left;
+      line-height: 28px;
+    }
+
+    &-top {
+      display: flex;
+      position: relative;
+      &::after {
+        @media (max-width: 768px) {
+          top: 16px;
+          right: -18px;
+          transition: all 0.3s ease;
+        }
+        content: attr(data-rating);
+        position: relative;
+        width: 30px;
+        height: 30px;
+        top: 18px;
+        right: -17px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        font-size: 12px;
+        font-weight: bolder;
+      }
+      @media (max-width: 768px) {
+        display: flex;
+        column-gap: 13px;
+      }
+    }
+    &-description {
+      margin-bottom: 7px;
+    }
+    &-date {
+      margin-bottom: 7px;
+    }
+    &-info {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+}
+
+
+
+.movie-container {
+  flex-direction: row;
+  min-height: 281px;
+  display: flex;
+  border: 1px solid #f0f0f0;
+	height: 100%;
+}
