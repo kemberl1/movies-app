@@ -2,4 +2,4 @@
 
 :white_check_mark: ***Практическое задание: Movies App.***  
 > Главная ветка: https://github.com/kemberl1/movies-app/tree/main    
-> Vercel Project: https://movies-app-valeria-poiarkovas-projects.vercel.app/
+> Vercel Project: https://movies-app-ashen-ten.vercel.app/
